@@ -13,6 +13,7 @@ int md0550_data_pin = A0;
 int sensor_value = 0;
 int sensorMin = 1023;        // minimum sensor value
 int sensorMax = 0;           // maximum sensor value
+float sensor_value_to_v = 0;
 
 void setup() {                
   // initialize the digital pin as an output.
@@ -21,8 +22,7 @@ void setup() {
   Serial.println("Giving sensor a chance to boot up");
   delay(10000);
   Serial.println("Calibrating");
-  // calibrate during the first five seconds 
-  while (millis() < 70000) {
+  while (millis() < 40000) {
     sensor_value = analogRead(md0550_data_pin);
 
     // record the maximum sensor value
@@ -50,8 +50,9 @@ void loop() {
   // read the value from the sensor:
   sensor_value = analogRead(md0550_data_pin);
   sensor_value = map(sensor_value, sensorMin, sensorMax, 0, 255);
-  Serial.print("Sensor reading: ");
-  Serial.println(sensor_value);
-  delay(500);
+  sensor_value_to_v =  0.0049 * sensor_value;
+  Serial.print("volt: ");
+  Serial.println(sensor_value_to_v);
+  delay(1000);
 }
 
