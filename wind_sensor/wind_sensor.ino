@@ -41,14 +41,14 @@
  * TMP => not connected, probably should be ;)
  *
 */
-String location = "BEDROOM";
+String location = "ORANGE";
 int md0550_data_pin = A0;    // output pin
 int sensor_value = 0;
 int sensorMin = 1023;        // minimum sensor value
 int sensorMax = 0;           // maximum sensor value
 float sensor_value_to_v = 0;
 int led = 13;
-
+#define Vref    4.95
 
 void setup() {                
   // initialize the digital pin as an output.
@@ -87,7 +87,8 @@ void loop() {
   // read the value from the sensor:
   digitalWrite(led, HIGH);   // turn the LED on (HIGH is the voltage level)
   sensor_value = analogRead(md0550_data_pin);
-  sensor_value = map(sensor_value, sensorMin, sensorMax, 0, 255);
+  // sensor_value modified from https://github.com/TheThingSystem/steward/blob/master/things/examples/arduino/VentSensor/VentSensor.ino
+  sensor_value = (((float) map(analogRead(md0550_data_pin), sensorMin, sensorMax, 0, 255)) * Vref) / 1023;
   sensor_value_to_v =  0.0049 * sensor_value;
   Serial.print(location);
   Serial.print(" volt: ");
